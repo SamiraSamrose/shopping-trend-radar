@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Trend Radar - Home</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🛍️ Shopping Trend Radar Agent</h1>
+            <p>AI-Powered Trend Analysis Across Multiple Platforms</p>
+        </div>
+
+        <nav class="nav">
+            <a href="/" class="nav-button active">Home</a>
+            <a href="/merchant" class="nav-button">Merchant Dashboard</a>
+            <a href="/consumer" class="nav-button">Consumer Dashboard</a>
+            <a href="/demo" class="nav-button">Interactive Demo</a>
+        </nav>
+
+        <div class="dashboard-grid">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Overview</div>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="totalProducts">0</div>
+                        <div class="stat-label">Total Products</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="emergingTrends">0</div>
+                        <div class="stat-label">Emerging Trends</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="risingTrends">0</div>
+                        <div class="stat-label">Rising Trends</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="avgTrendScore">0%</div>
+                        <div class="stat-label">Avg Trend Score</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Platform Distribution</div>
+                </div>
+                <div class="chart-container" style="height: 250px;">
+                    <canvas id="platformChart"></canvas>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Category Breakdown</div>
+                </div>
+                <div class="chart-container" style="height: 250px;">
+                    <canvas id="categoryChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Filters</div>
+                <button class="btn btn-secondary" id="refreshBtn">🔄 Refresh</button>
+            </div>
+
+            <div class="filters">
+                <div class="form-group">
+                    <label class="form-label">Search Products</label>
+                    <input type="text" class="form-input" id="searchInput" placeholder="Search by name or category...">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Minimum Trend Score: <span id="minScoreLabel">50%</span></label>
+                    <input type="range" class="form-input" id="minScoreSlider" min="0" max="1" step="0.1" value="0.5">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Platforms</label>
+                    <div class="filter-row">
+                        <button class="nav-button" data-filter="platform" data-value="amazon">Amazon</button>
+                        <button class="nav-button" data-filter="platform" data-value="tiktok">TikTok</button>
+                        <button class="nav-button" data-filter="platform" data-value="youtube">YouTube</button>
+                        <button class="nav-button" data-filter="platform" data-value="instagram">Instagram</button>
+                        <button class="nav-button" data-filter="platform" data-value="meta">Meta</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Status</label>
+                    <div class="filter-row">
+                        <button class="nav-button" data-filter="status" data-value="emerging">Emerging</button>
+                        <button class="nav-button" data-filter="status" data-value="rising">Rising</button>
+                        <button class="nav-button" data-filter="status" data-value="peak">Peak</button>
+                        <button class="nav-button" data-filter="status" data-value="stable">Stable</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Trending Products</div>
+            </div>
+            <div class="product-list" id="productsContainer">
+                <div class="spinner"></div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Trending Categories</div>
+            </div>
+            <div class="dashboard-grid" id="categoriesContainer">
+                <div class="spinner"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/api-client.js"></script>
+    <script src="/static/js/charts.js"></script>
+    <script src="/static/js/main.js"></script>
+</body>
+</html>
