@@ -2,7 +2,7 @@
 
 An AI-powered trend analysis system that monitors shopping trends across Amazon, social media platforms (YouTube, TikTok, Instagram, Meta, Pinterest), and e-commerce sites (Etsy, Walmart, eBay, Target) to surface trending products for merchants and consumers.
 
-## 🚀 Features
+## Features
 
 ### For Merchants
 - **Product Sourcing & Selection**: Discover trending products before they peak
@@ -18,7 +18,7 @@ An AI-powered trend analysis system that monitors shopping trends across Amazon,
 - **Trend Alerts**: Custom notifications for products you care about
 - **Social Proof**: See what's popular across platforms
 
-## 🏗️ Architecture
+## Architecture
 
 ### Core Technologies
 - **AWS Bedrock Agent** - AI analysis using Claude 3 Sonnet
@@ -40,7 +40,7 @@ An AI-powered trend analysis system that monitors shopping trends across Amazon,
 - 🔨 eBay - Bids, watchers, sales
 - 🎯 Target - Ratings, reviews, stock
 
-## 📋 Prerequisites
+## Prerequisites
 
 - Python 3.11+
 - Docker & Docker Compose
@@ -54,7 +54,7 @@ An AI-powered trend analysis system that monitors shopping trends across Amazon,
   - CloudWatch
 - API Keys for platforms (YouTube, TikTok, Instagram, etc.)
 
-## 🛠️ Installation
+## Installation
 
 ### 1. Clone the Repository
 ```bash
@@ -108,7 +108,7 @@ alembic upgrade head
 python scripts/seed_data.py
 ```
 
-## 🚀 Running the Application
+## Running the Application
 
 ### Using Docker Compose
 ```bash
@@ -133,7 +133,7 @@ cd backend
 uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-## 📊 Usage Guide
+## Usage Guide
 
 ### Merchant Dashboard
 
@@ -259,7 +259,7 @@ DELETE /api/v1/alerts/{alert_id}
 GET /api/v1/alerts/{alert_id}/check
 ```
 
-## 🧪 Testing
+## Testing
 
 ### Run Unit Tests
 ```bash
@@ -284,7 +284,7 @@ python -m tests.test_sagemaker
 pytest tests/test_api.py -v
 ```
 
-## 📈 AWS Lambda Functions
+## AWS Lambda Functions
 
 ### Deploy Lambda Functions
 ```bash
@@ -314,7 +314,7 @@ aws events put-targets \
   --targets "Id"="1","Arn"="arn:aws:lambda:REGION:ACCOUNT:function:trend-radar-dashboard-generator"
 ```
 
-## 🗄️ Database Schema
+## Database Schema
 
 ### Products Table
 ```sql
@@ -348,7 +348,7 @@ CREATE TABLE alerts (
 );
 ```
 
-## 📊 Monitoring & Metrics
+## Monitoring & Metrics
 
 ### CloudWatch Metrics
 
@@ -371,7 +371,7 @@ aws cloudwatch get-metric-statistics \
   --statistics Average
 ```
 
-## 🔒 Security
+## Security
 
 ### Environment Variables
 
@@ -404,7 +404,7 @@ async def verify_token(credentials = Depends(security)):
     pass
 ```
 
-## 🚢 Deployment
+## Deployment
 
 ### Deploy to AWS ECS
 ```bash
@@ -438,7 +438,7 @@ terraform plan
 terraform apply
 ```
 
-## 📝 Configuration
+## Configuration
 
 ### Custom Event Calendar
 
@@ -464,7 +464,7 @@ SUPPORTED_PLATFORMS = {
 }
 ```
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### Common Issues
 
