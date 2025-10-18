@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Demo - Shopping Trend Radar</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        .demo-section {
+            margin-bottom: 40px;
+        }
+        
+        .demo-controls {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .tool-card {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.2), rgba(118, 75, 162, 0.2));
+            padding: 20px;
+            border-radius: 15px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .tool-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(102, 126, 234, 0.5);
+        }
+        
+        .tool-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+        
+        .demo-output {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .pipeline-step {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-left: 4px solid #667eea;
+            margin-bottom: 15px;
+            border-radius: 5px;
+        }
+        
+        .pipeline-step.active {
+            background: rgba(102, 126, 234, 0.2);
+            border-left-color: #10b981;
+        }
+        
+        .pipeline-step.complete {
+            border-left-color: #10b981;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎮 Interactive Demo</h1>
+            <p>Explore all features, tools, and AI capabilities</p>
+        </div>
+
+        <nav class="nav">
+            <a href="/" class="nav-button">Home</a>
+            <a href="/merchant" class="nav-button">Merchant Dashboard</a>
+            <a href="/consumer" class="nav-button">Consumer Dashboard</a>
+            <a href="/demo" class="nav-button active">Interactive Demo</a>
+        </nav>
+
+        <!-- System Overview -->
+        <div class="demo-section">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">🏗️ System Architecture & Tools</div>
+                </div>
+                <div class="dashboard-grid">
+                    <div class="tool-card">
+                        <div class="tool-icon">🤖</div>
+                        <h3>AWS Bedrock Agent</h3>
+                        <p>Core AI engine for trend analysis using Claude 3 Sonnet</p>
+                        <ul style="text-align: left; margin-top: 10px;">
+                            <li>Natural language processing</li>
+                            <li>Multi-source data analysis</li>
+                            <li>Intelligent recommendations</li>
+                        </ul>
+                        <button class="btn btn-primary" onclick="demoBedrockAgent()">Test Agent</button>
+                    </div>
+
+                    <div class="tool-card">
+                        <div class="tool-icon">📊</div>
+                        <h3>Amazon SageMaker</h3>
+                        <p>ML predictions for trend trajectories and demand forecasting</p>
+                        <ul style="text-align: left; margin-top: 10px;">
+                            <li>Trend score calculation</li>
+                            <li>Viral velocity prediction</li>
+                            <li>Inventory forecasting</li>
+                        </ul>
+                        <button class="btn btn-primary" onclick="demoSageMaker()">Run Prediction</button>
+                    </div>
+
+                    <div class="tool-card">
+                        <div class="tool-icon">🌐</div>
+                        <h3>Nova SDK</h3>
+                        <p>Multi-platform API connector for social media and e-commerce</p>
+                        <ul style="text-align: left; margin-top: 10px;">
+                            <li>YouTube, TikTok, Instagram</li>
+                            <li>Meta, Pinterest integration</li>
+                            <li>Real-time data fetching</li>
+                        </ul>
+                        <button class="btn btn-primary" onclick="demoNovaSDK()">Fetch Data</button>
+                    </div>
+
+                    <div class="tool-card">
+                        <div class="tool-icon">💼</div>
+                        <h3>Amazon Q</h3>
+                        <p>Business intelligence for policies and compliance</p>
+                        <ul style="text-align: left; margin-top: 10px;">
+                            <li>Product policy queries</li>
+                            <li>Compliance checking</li>
+                            <li>Metadata retrieval</li>
+                        </ul>
+                        <button class="btn btn-primary" onclick="demoAmazonQ()">Query Policies</button>
+                    </div>
+
+                    <div class="tool-card">
+                        <div class="tool-icon">📈</div>
+                        <h3>Strands SDK</h3>
+                        <p>Sales data ingestion from e-commerce platforms</p>
+                        <ul style="text-align: left; margin-top: 10px;">
+                            <li>Amazon, Walmart, eBay</li>
+                            <li>Etsy, Target sales data</li>
+                            <li>Real-time metrics</li>
+                        </ul>
+                        <button class="btn btn-primary" onclick="demoStrandsSDK()">Ingest Sales</button>
+                    </div>
+
+                    <div class="tool-card">
+                        <div class="tool-icon">☁️</div>
+                        <h3>AWS Lambda + S3</h3>
+                        <p>Serverless processing and dashboard generation</p>
+                        <ul style="text-align: left; margin-top: 10px;">
+                            <li>Automated report generation</li>
+                            <li>Periodic trend analysis</li>
+                            <li>Alert notifications</li>
+                        </ul>
+                        <button class="btn btn-primary" onclick="demoLambdaS3()">Generate Report</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Live Pipeline Demo -->
+        <div class="demo-section">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">🔄 Live Data Processing Pipeline</div>
+                    <button class="btn btn-success" id="startPipelineBtn" onclick="startPipeline()">
+                        ▶️ Start Pipeline
+                    </button>
+                </div>
+                
+                <div class="demo-controls">
+                    <div class="form-group">
+                        <label class="form-label">Product Keywords</label>
+                        <input type="text" class="form-input" id="pipelineKeywords" 
+                               placeholder="E.g., wireless earbuds, smartwatch" 
+                               value="wireless earbuds, fitness tracker">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Platforms to Query</label>
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                            <label><input type="checkbox" checked value="amazon"> Amazon</label>
+                            <label><input type="checkbox" checked value="youtube"> YouTube</label>
+                            <label><input type="checkbox" checked value="tiktok"> TikTok</label>
+                            <label><input type="checkbox" checked value="instagram"> Instagram</label>
+                            <label><input type="checkbox" value="meta"> Meta</label>
+                            <label><input type="checkbox" value="etsy"> Etsy</label>
+                        </div>
+                </div>
+
+                <div id="pipelineSteps">
+                    <div class="pipeline-step" id="step1">
+                        <h4>1️⃣ Nova SDK - Fetch Social Media Data</h4>
+                        <p>Status: <span class="status">Waiting...</span></p>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 0%"></div>
+                        </div>
+                    </div>
+
+                    <div class="pipeline-step" id="step2">
+                        <h4>2️⃣ Strands SDK - Ingest Sales Data</h4>
+                        <p>Status: <span class="status">Waiting...</span></p>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 0%"></div>
+                        </div>
+                    </div>
+
+                    <div class="pipeline-step" id="step3">
+                        <h4>3️⃣ Data Aggregation - Merge & Normalize</h4>
+                        <p>Status: <span class="status">Waiting...</span></p>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 0%"></div>
+                        </div>
+                    </div>
+
+                    <div class="pipeline-step" id="step4">
+                        <h4>4️⃣ Bedrock Agent - AI Analysis</h4>
+                        <p>Status: <span class="status">Waiting...</span></p>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 0%"></div>
+                        </div>
+                    </div>
+
+                    <div class="pipeline-step" id="step5">
+                        <h4>5️⃣ SageMaker - ML Predictions</h4>
+                        <p>Status: <span class="status">Waiting...</span></p>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 0%"></div>
+                        </div>
+                    </div>
+
+                    <div class="pipeline-step" id="step6">
+                        <h4>6️⃣ Amazon Q - Policy & Compliance Check</h4>
+                        <p>Status: <span class="status">Waiting...</span></p>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 0%"></div>
+                        </div>
+                    </div>
+
+                    <div class="pipeline-step" id="step7">
+                        <h4>7️⃣ Lambda - Dashboard Generation</h4>
+                        <p>Status: <span class="status">Waiting...</span></p>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 0%"></div>
+                        </div>
+                    </div>
+
+                    <div class="pipeline-step" id="step8">
+                        <h4>8️⃣ S3 Storage - Save Results</h4>
+                        <p>Status: <span class="status">Waiting...</span></p>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="pipelineOutput" style="display: none;">
+                    <h3>📤 Pipeline Output</h3>
+                    <div class="demo-output" id="outputContent"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Platform Monitoring Demo -->
+        <div class="demo-section">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">📱 Real-Time Platform Monitoring</div>
+                </div>
+                
+                <div class="dashboard-grid">
+                    <div class="card">
+                        <h3>🛒 Amazon</h3>
+                        <div class="stat-value" id="amazonMetric">0</div>
+                        <div class="stat-label">Products Tracked</div>
+                        <p style="margin-top: 10px; font-size: 0.9rem;">
+                            <strong>Metrics:</strong> Sales rank, reviews, ratings, best-seller badge
+                        </p>
+                        <button class="btn btn-secondary btn-sm" onclick="testPlatform('amazon')">Test API</button>
+                    </div>
+
+                    <div class="card">
+                        <h3>📺 YouTube</h3>
+                        <div class="stat-value" id="youtubeMetric">0</div>
+                        <div class="stat-label">Videos Analyzed</div>
+                        <p style="margin-top: 10px; font-size: 0.9rem;">
+                            <strong>Metrics:</strong> Views, likes, comments, mentions
+                        </p>
+                        <button class="btn btn-secondary btn-sm" onclick="testPlatform('youtube')">Test API</button>
+                    </div>
+
+                    <div class="card">
+                        <h3>🎵 TikTok</h3>
+                        <div class="stat-value" id="tiktokMetric">0</div>
+                        <div class="stat-label">Viral Content</div>
+                        <p style="margin-top: 10px; font-size: 0.9rem;">
+                            <strong>Metrics:</strong> Views, likes, shares, hashtag usage
+                        </p>
+                        <button class="btn btn-secondary btn-sm" onclick="testPlatform('tiktok')">Test API</button>
+                    </div>
+
+                    <div class="card">
+                        <h3>📸 Instagram</h3>
+                        <div class="stat-value" id="instagramMetric">0</div>
+                        <div class="stat-label">Posts Tracked</div>
+                        <p style="margin-top: 10px; font-size: 0.9rem;">
+                            <strong>Metrics:</strong> Likes, comments, saves, hashtag usage
+                        </p>
+                        <button class="btn btn-secondary btn-sm" onclick="testPlatform('instagram')">Test API</button>
+                    </div>
+
+                    <div class="card">
+                        <h3>👥 Meta (Facebook)</h3>
+                        <div class="stat-value" id="metaMetric">0</div>
+                        <div class="stat-label">Engagements</div>
+                        <p style="margin-top: 10px; font-size: 0.9rem;">
+                            <strong>Metrics:</strong> Likes, shares, comments, engagement rate
+                        </p>
+                        <button class="btn btn-secondary btn-sm" onclick="testPlatform('meta')">Test API</button>
+                    </div>
+
+                    <div class="card">
+                        <h3>📌 Pinterest</h3>
+                        <div class="stat-value" id="pinterestMetric">0</div>
+                        <div class="stat-label">Pins Analyzed</div>
+                        <p style="margin-top: 10px; font-size: 0.9rem;">
+                            <strong>Metrics:</strong> Pins, saves, impressions
+                        </p>
+                        <button class="btn btn-secondary btn-sm" onclick="testPlatform('pinterest')">Test API</button>
+                    </div>
+
+                    <div class="card">
+                        <h3>🎨 Etsy</h3>
+                        <div class="stat-value" id="etsyMetric">0</div>
+                        <div class="stat-label">Products Listed</div>
+                        <p style="margin-top: 10px; font-size: 0.9rem;">
+                            <strong>Metrics:</strong> Favorites, sales, views
+                        </p>
+                        <button class="btn btn-secondary btn-sm" onclick="testPlatform('etsy')">Test API</button>
+                    </div>
+
+                    <div class="card">
+                        <h3>🏬 Walmart</h3>
+                        <div class="stat-value" id="walmartMetric">0</div>
+                        <div class="stat-label">Products Monitored</div>
+                        <p style="margin-top: 10px; font-size: 0.9rem;">
+                            <strong>Metrics:</strong> Sales rank, reviews, stock status
+                        </p>
+                        <button class="btn btn-secondary btn-sm" onclick="testPlatform('walmart')">Test API</button>
+                    </div>
+
+                    <div class="card">
+                        <h3>🔨 eBay</h3>
+                        <div class="stat-value" id="ebayMetric">0</div>
+                        <div class="stat-label">Auctions Tracked</div>
+                        <p style="margin-top: 10px; font-size: 0.9rem;">
+                            <strong>Metrics:</strong> Bids, watchers, sales
+                        </p>
+                        <button class="btn btn-secondary btn-sm" onclick="testPlatform('ebay')">Test API</button>
+                    </div>
+
+                    <div class="card">
+                        <h3>🎯 Target</h3>
+                        <div class="stat-value" id="targetMetric">0</div>
+                        <div class="stat-label">Items Analyzed</div>
+                        <p style="margin-top: 10px; font-size: 0.9rem;">
+                            <strong>Metrics:</strong> Ratings, reviews, stock status
+                        </p>
+                        <button class="btn btn-secondary btn-sm" onclick="testPlatform('target')">Test API</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Use Case Scenarios -->
+        <div class="demo-section">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">🎯 Use Case Scenarios</div>
+                </div>
+
+                <div class="dashboard-grid">
+                    <div class="tool-card">
+                        <h3>🏪 Merchant: Product Sourcing</h3>
+                        <p>Discover trending products before they peak for competitive advantage</p>
+                        <button class="btn btn-primary" onclick="runScenario('merchant-sourcing')">
+                            Run Scenario
+                        </button>
+                    </div>
+
+                    <div class="tool-card">
+                        <h3>📦 Merchant: Inventory Planning</h3>
+                        <p>Forecast demand and optimize stock levels based on trend predictions</p>
+                        <button class="btn btn-primary" onclick="runScenario('merchant-inventory')">
+                            Run Scenario
+                        </button>
+                    </div>
+
+                    <div class="tool-card">
+                        <h3>📢 Merchant: Ad Campaign</h3>
+                        <p>Target audiences with trending products for maximum ROI</p>
+                        <button class="btn btn-primary" onclick="runScenario('merchant-ads')">
+                            Run Scenario
+                        </button>
+                    </div>
+
+                    <div class="tool-card">
+                        <h3>🛍️ Consumer: Smart Shopping</h3>
+                        <p>Find best deals and avoid overpaying for trending products</p>
+                        <button class="btn btn-primary" onclick="runScenario('consumer-shopping')">
+                            Run Scenario
+                        </button>
+                    </div>
+
+                    <div class="tool-card">
+                        <h3>🎁 Consumer: Gift Ideas</h3>
+                        <p>Get personalized gift recommendations based on events and trends</p>
+                        <button class="btn btn-primary" onclick="runScenario('consumer-gifts')">
+                            Run Scenario
+                        </button>
+                    </div>
+
+                    <div class="tool-card">
+                        <h3>🔔 Consumer: Trend Alerts</h3>
+                        <p>Receive notifications when products match your interests start trending</p>
+                        <button class="btn btn-primary" onclick="runScenario('consumer-alerts')">
+                            Run Scenario
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- API Testing Console -->
+        <div class="demo-section">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">🔧 API Testing Console</div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Select Endpoint</label>
+                    <select class="form-select" id="apiEndpoint">
+                        <option value="/api/v1/trends/products">GET /trends/products</option>
+                        <option value="/api/v1/trends/categories">GET /trends/categories</option>
+                        <option value="/api/v1/trends/report">GET /trends/report</option>
+                        <option value="/api/v1/products/events">GET /products/events</option>
+                        <option value="/api/v1/products/compare">GET /products/compare</option>
+                        <option value="/api/v1/alerts/">POST /alerts</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Request Parameters (JSON)</label>
+                    <textarea class="form-textarea" id="apiParams" rows="5">{
+  "categories": ["Electronics"],
+  "min_score": 0.7,
+  "limit": 10
+}</textarea>
+                </div>
+
+                <button class="btn btn-primary" onclick="testAPI()">Send Request</button>
+
+                <div id="apiResponse" style="display: none; margin-top: 20px;">
+                    <h3>Response:</h3>
+                    <div class="demo-output" id="apiResponseContent"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Performance Metrics -->
+        <div class="demo-section">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">⚡ System Performance Metrics</div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="avgResponseTime">0ms</div>
+                        <div class="stat-label">Avg Response Time</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-value" id="totalRequests">0</div>
+                        <div class="stat-label">Total API Requests</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-value" id="successRate">100%</div>
+                        <div class="stat-label">Success Rate</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-value" id="productsAnalyzed">0</div>
+                        <div class="stat-label">Products Analyzed</div>
+                    </div>
+                </div>
+
+                <div class="chart-container" style="height: 300px; margin-top: 20px;">
+                    <canvas id="performanceChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/api-client.js"></script>
+    <script src="/static/js/charts.js"></script>
+    <script>
+        let pipelineRunning = false;
+        let performanceData = {
+            requests: 0,
+            successCount: 0,
+            responseTimes: []
+        };
+
+        // Demo Functions for Each Tool
+        async function demoBedrockAgent() {
+            const output = `
+🤖 AWS Bedrock Agent Demo
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Initializing Bedrock Agent...
+Model: Claude 3 Sonnet (anthropic.claude-3-sonnet-20240229-v1:0)
+
+Query: "Analyze trend data for wireless earbuds"
+
+Agent Response:
+{
+  "trend_score": 0.87,
+  "viral_velocity": 0.72,
+  "status": "rising",
+  "insights": [
+    "Product showing strong momentum on TikTok and Instagram",
+    "23% increase in engagement over past 7 days",
+    "Peak predicted in 14-21 days based on current trajectory"
+  ],
+  "confidence": 0.89
+}
+
+Analysis Complete ✓
+Agent Session ID: ${generateSessionId()}
+Processing Time: 1.2s
+            `;
+            showDemoAlert('Bedrock Agent', output);
+        }
+
+        async function demoSageMaker() {
+            const output = `
+📊 Amazon SageMaker ML Prediction Demo
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Loading ML Model...
+Endpoint: trend-prediction-endpoint
+
+Input Features:
+- Engagement Rate: 0.145
+- Growth Rate: 0.238
+- Platform Count: 5
+- Days Trending: 4
+
+Running Prediction...
+
+Results:
+{
+  "trend_score": 0.834,
+  "trend_direction": "strongly_rising",
+  "confidence": 0.91,
+  "predicted_peak_date": "2025-11-05",
+  "duration_days": 18,
+  "recommendation": "High opportunity - stock immediately"
+}
+
+Model Version: 1.2.3
+Prediction Time: 0.8s ✓
+            `;
+            showDemoAlert('SageMaker Predictor', output);
+        }
+
+        async function demoNovaSDK() {
+            const output = `
+🌐 Nova SDK Multi-Platform Fetch Demo
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Connecting to platforms...
+
+✓ YouTube API: 47 videos fetched
+✓ TikTok API: 132 videos fetched
+✓ Instagram API: 89 posts fetched
+✓ Meta API: 34 posts fetched
+✓ Pinterest API: 56 pins fetched
+
+Total Items: 358
+Processing Time: 3.4s
+
+Sample Data:
+{
+  "platform": "tiktok",
+  "id": "7289374893274",
+  "views": 2847293,
+  "likes": 348392,
+  "shares": 12849,
+  "hashtags": ["wirelessearbuds", "techreview"]
+}
+
+Data aggregation complete ✓
+            `;
+            showDemoAlert('Nova SDK Connector', output);
+        }
+
+        async function demoAmazonQ() {
+            const output = `
+💼 Amazon Q Business Intelligence Demo
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Query: "Check compliance for Electronics category on Amazon and eBay"
+
+Querying Amazon Q...
+
+Response:
+{
+  "category": "Electronics",
+  "compliant": true,
+  "platform_status": {
+    "amazon": true,
+    "ebay": true,
+    "walmart": true,
+    "etsy": false,
+    "target": true
+  },
+  "restrictions": [
+    "Battery regulations apply for wireless devices",
+    "CE marking required for EU markets",
+    "FCC certification needed for US sales"
+  ],
+  "recommendations": [
+    "Ensure all safety certifications are in place",
+    "Include battery disposal information",
+    "Verify compatibility with platform policies"
+  ]
+}
+
+Compliance check complete ✓
+Query Time: 1.5s
+            `;
+            showDemoAlert('Amazon Q Service', output);
+        }
+
+        async function demoStrandsSDK() {
+            const output = `
+📈 Strands SDK Sales Data Ingestion Demo
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Ingesting sales data from past 7 days...
+
+✓ Amazon: 1,247 products ingested
+✓ Walmart: 834 products ingested
+✓ eBay: 592 products ingested
+✓ Etsy: 423 products ingested
+✓ Target: 367 products ingested
+
+Total Products: 3,463
+Total Revenue Tracked: $2,847,293
+
+Top Selling Product:
+{
+  "product_name": "Wireless Bluetooth Earbuds",
+  "platform": "amazon",
+  "sales": 2,847,
+  "revenue": 142,350,
+  "conversion_rate": 0.187
+}
+
+Ingestion complete ✓
+Processing Time: 4.2s
+            `;
+            showDemoAlert('Strands SDK', output);
+        }
+
+        async function demoLambdaS3() {
+            const output = `
+☁️ AWS Lambda + S3 Dashboard Generation Demo
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Triggering Lambda Function...
+Function: trend-radar-dashboard-generator
+
+Processing Steps:
+1. ✓ Aggregate data from all sources
+2. ✓ Calculate trend metrics
+3. ✓ Generate visualizations
+4. ✓ Create HTML dashboard
+5. ✓ Upload to S3
+
+S3 Upload:
+{
+  "bucket": "shopping-trend-radar-data",
+  "key": "dashboards/merchant/20251017_143022.json",
+  "size": "847 KB",
+  "url": "https://s3.amazonaws.com/shopping-trend-radar-data/..."
+}
+
+Dashboard generated successfully ✓
+Total Time: 2.7s
+            `;
+            showDemoAlert('Lambda + S3', output);
+        }
+
+        // Pipeline Demo
+        async function startPipeline() {
+            if (pipelineRunning) return;
+
+            pipelineRunning = true;
+            document.getElementById('startPipelineBtn').disabled = true;
+            document.getElementById('pipelineOutput').style.display = 'block';
+
+            const steps = [
+                { id: 'step1', duration: 2000, action: simulateNovaFetch },
+                { id: 'step2', duration: 2500, action: simulateStrandsIngest },
+                { id: 'step3', duration: 1500, action: simulateAggregation },
+                { id: 'step4', duration: 2000, action: simulateBedrockAnalysis },
+                { id: 'step5', duration: 1800, action: simulateSageMakerPrediction },
+                { id: 'step6', duration: 1200, action: simulateAmazonQCheck },
+                { id: 'step7', duration: 1000, action: simulateLambdaGeneration },
+                { id: 'step8', duration: 800, action: simulateS3Storage }
+            ];
+
+            let outputText = '';
+
+            for (const step of steps) {
+                const element = document.getElementById(step.id);
+                element.classList.add('active');
+                
+                const status = element.querySelector('.status');
+                const progress = element.querySelector('.progress-fill');
+                
+                status.textContent = 'Running...';
+                
+                // Animate progress
+                let width = 0;
+                const interval = setInterval(() => {
+                    width += 2;
+                    progress.style.width = width + '%';
+                    if (width >= 100) clearInterval(interval);
+                }, step.duration / 50);
+
+                // Execute step action
+                const result = await step.action();
+                outputText += result + '\n\n';
+                document.getElementById('outputContent').textContent = outputText;
+
+                await new Promise(resolve => setTimeout(resolve, step.duration));
+                
+                status.textContent = 'Complete ✓';
+                element.classList.remove('active');
+                element.classList.add('complete');
+            }
+
+            pipelineRunning = false;
+            document.getElementById('startPipelineBtn').disabled = false;
+            alert('Pipeline completed successfully! ✓');
+        }
+
+        // Simulation functions
+        async function simulateNovaFetch() {
+            return `[Nova SDK] Fetching data from platforms...\n` +
+                   `  YouTube: 47 items\n` +
+                   `  TikTok: 132 items\n` +
+                   `  Instagram: 89 items`;
+        }
+
+        async function simulateStrandsIngest() {
+            return `[Strands SDK] Ingesting sales data...\n` +
+                   `  Amazon: 1,247 products\n` +
+                   `  Walmart: 834 products\n` +
+                   `  eBay: 592 products`;
+        }
+
+        async function simulateAggregation() {
+            return `[Data Aggregator] Merging data from 10 sources...\n` +
+                   `  Total products identified: 3,842\n` +
+                   `  Unique products after deduplication: 2,156`;
+        }
+
+        async function simulateBedrockAnalysis() {
+            return `[Bedrock Agent] Analyzing trends with Claude 3...\n` +
+                   `  Trend scores calculated\n` +
+                   `  Status: 156 emerging, 423 rising, 289 peak`;
+        }
+
+        async function simulateSageMakerPrediction() {
+            return `[SageMaker] Running ML predictions...\n` +
+                   `  Batch prediction completed\n` +
+                   `  Average confidence: 0.87`;
+        }
+
+        async function simulateAmazonQCheck() {
+            return `[Amazon Q] Checking policies and compliance...\n` +
+                   `  98.3% products compliant\n` +
+                   `  37 products flagged for review`;
+        }
+
+        async function simulateLambdaGeneration() {
+            return `[Lambda] Generating dashboards...\n` +
+                   `  Merchant dashboard created\n` +
+                   `  Consumer dashboard created`;
+        }
+
+        async function simulateS3Storage() {
+            return `[S3] Storing results...\n` +
+                   `  Dashboard uploaded: dashboards/20251017_143022.json\n` +
+                   `  Data archived: data/20251017/trends.json`;
+        }
+
+        // Platform Testing
+        async function testPlatform(platform) {
+            const metric = document.getElementById(`${platform}Metric`);
+            const currentValue = parseInt(metric.textContent) || 0;
+            const newValue = currentValue + Math.floor(Math.random() * 50) + 10;
+            
+            metric.textContent = newValue;
+            
+            updatePerformanceMetrics();
+            
+            alert(`✓ ${platform.charAt(0).toUpperCase() + platform.slice(1)} API test successful!\n\n` +
+                  `Items fetched: ${Math.floor(Math.random() * 100) + 20}\n` +
+                  `Response time: ${(Math.random() * 2 + 0.5).toFixed(2)}s`);
+        }
+
+        // Scenario Runner
+        async function runScenario(scenario) {
+            const scenarios = {
+                'merchant-sourcing': {
+                    title: 'Merchant: Product Sourcing',
+                    steps: [
+                        'Scanning 10 platforms for trending products...',
+                        'Identified 47 emerging trends in Electronics category',
+                        'Competition analysis: 12 products have low competition',
+                        'Profit margin calculator: Average 38% margin',
+                        'Recommendation: Stock "Wireless Sleep Headphones" - High opportunity!'
+                    ]
+                },
+                'merchant-inventory': {
+                    title: 'Merchant: Inventory Planning',
+                    steps: [
+                        'Analyzing historical sales data...',
+                        'ML forecast: Demand spike expected in 14 days',
+                        'Current stock: 120 units',
+                        'Recommended stock: 500 units',
+                        'Reorder point: 150 units (place order now!)'
+                    ]
+                },
+                'merchant-ads': {
+                    title: 'Merchant: Ad Campaign Planning',
+                    steps: [
+                        'Identifying trending products on social media...',
+                        'Target audience: Ages 18-34, Tech enthusiasts',
+                        'Best platforms: TikTok (87% engagement), Instagram (72%)',
+                        'Suggested budget: $100-150/day',
+                        'Expected ROI: 4.2x based on current trends'
+                    ]
+                },
+                'consumer-shopping': {
+                    title: 'Consumer: Smart Shopping',
+                    steps: [
+                        'Comparing prices across 5 platforms...',
+                        'Amazon: $79.99 | Walmart: $74.99 | eBay: $72.99',
+                        'Best deal: eBay at $72.99 (Save $7!)',
+                        'Price trend: Decreasing (-8% this week)',
+                        'Recommendation: Good time to buy!'
+                    ]
+                },
+                'consumer-gifts': {
+                    title: 'Consumer: Gift Ideas',
+                    steps: [
+                        'Checking upcoming events: Halloween (14 days)',
+                        'Popular gift categories: Costumes, Decorations, Candy',
+                        'Trending product: LED Skull Decorations',
+                        'Best platform: Etsy (handmade options)',
+                        'Urgency: Medium - Buy within 7 days for on-time delivery'
+                    ]
+                },
+                'consumer-alerts': {
+                    title: 'Consumer: Trend Alerts',
+                    steps: [
+                        'Creating alert for "Smart Home Devices"...',
+                        'Monitoring 8 platforms for new trends',
+                        'Alert triggers: Trend score > 0.7',
+                        'Notification method: Email',
+                        'Alert created successfully! You\'ll be notified of new trends.'
+                    ]
+                }
+            };
+
+            const config = scenarios[scenario];
+            let message = `${config.title}\n${'═'.repeat(50)}\n\n`;
+            
+            for (let i = 0; i < config.steps.length; i++) {
+                await new Promise(resolve => setTimeout(resolve, 800));
+                message += `${i + 1}. ${config.steps[i]}\n`;
+            }
+
+            message += `\n✓ Scenario completed successfully!`;
+            showDemoAlert(config.title, message);
+        }
+
+        // API Testing
+        async function testAPI() {
+            const endpoint = document.getElementById('apiEndpoint').value;
+            const paramsText = document.getElementById('apiParams').value;
+            
+            try {
+                const params = JSON.parse(paramsText);
+                const startTime = Date.now();
+                
+                // Simulate API call
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                const responseTime = Date.now() - startTime;
+                
+                const mockResponse = {
+                    success: true,
+                    data: {
+                        products: [
+                            { id: '1', name: 'Wireless Earbuds', trend_score: 0.87 },
+                            { id: '2', name: 'Fitness Tracker', trend_score: 0.82 }
+                        ],
+                        count: 2,
+                        timestamp: new Date().toISOString()
+                    },
+                    response_time_ms: responseTime
+                };
+
+                document.getElementById('apiResponse').style.display = 'block';
+                document.getElementById('apiResponseContent').textContent = 
+                    JSON.stringify(mockResponse, null, 2);
+                
+                updatePerformanceMetrics(responseTime, true);
+
+            } catch (error) {
+                alert('Error: Invalid JSON parameters');
+                updatePerformanceMetrics(0, false);
+            }
+        }
+
+        // Performance Metrics
+        function updatePerformanceMetrics(responseTime = null, success = true) {
+            performanceData.requests++;
+            if (success) performanceData.successCount++;
+            if (responseTime) performanceData.responseTimes.push(responseTime);
+
+            // Update display
+            const avgTime = performanceData.responseTimes.length > 0 
+                ? Math.round(performanceData.responseTimes.reduce((a, b) => a + b, 0) / performanceData.responseTimes.length)
+                : 0;
+            
+            document.getElementById('avgResponseTime').textContent = `${avgTime}ms`;
+            document.getElementById('totalRequests').textContent = performanceData.requests;
+            document.getElementById('successRate').textContent = 
+                `${((performanceData.successCount / performanceData.requests) * 100).toFixed(1)}%`;
+            document.getElementById('productsAnalyzed').textContent = 
+                Math.floor(performanceData.requests * 23.5);
+
+            updatePerformanceChart();
+        }
+
+        function updatePerformanceChart() {
+            const data = {
+                labels: performanceData.responseTimes.slice(-10).map((_, i) => `Req ${i + 1}`),
+                values: performanceData.responseTimes.slice(-10)
+            };
+
+            chartManager.createTrendChart('performanceChart', data, { label: 'Response Time (ms)' });
+        }
+
+        // Utility Functions
+        function showDemoAlert(title, content) {
+            const modal = document.createElement('div');
+            modal.className = 'modal active';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2>${title}</h2>
+                        <button class="modal-close" onclick="this.closest('.modal').remove()">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <pre class="demo-output" style="white-space: pre-wrap;">${content}</pre>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.remove();
+                }
+            });
+        }
+
+        function generateSessionId() {
+            return 'sess_' + Math.random().toString(36).substr(2, 9);
+        }
+
+        // Initialize demo
+        document.addEventListener('DOMContentLoaded', () => {
+            // Simulate some initial metrics
+            setTimeout(() => {
+                for (let i = 0; i < 5; i++) {
+                    updatePerformanceMetrics(Math.random() * 1000 + 500, true);
+                }
+            }, 1000);
+        });
+
+        // Export functions
+        window.demoBedrockAgent = demoBedrockAgent;
+        window.demoSageMaker = demoSageMaker;
+        window.demoNovaSDK = demoNovaSDK;
+        window.demoAmazonQ = demoAmazonQ;
+        window.demoStrandsSDK = demoStrandsSDK;
+        window.demoLambdaS3 = demoLambdaS3;
+        window.startPipeline = startPipeline;
+        window.testPlatform = testPlatform;
+        window.runScenario = runScenario;
+        window.testAPI = testAPI;
+    </script>
+</body>
+</html>
