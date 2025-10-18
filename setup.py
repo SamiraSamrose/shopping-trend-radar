@@ -19,10 +19,10 @@ setup(
     description="AI-powered shopping trend analysis across multiple platforms",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/yourusername/shopping-trend-radar",
+    url="https://github.com/samirasamrose/shopping-trend-radar",
     project_urls={
-        "Bug Tracker": "https://github.com/yourusername/shopping-trend-radar/issues",
-        "Documentation": "https://github.com/yourusername/shopping-trend-radar/docs",
+        "Bug Tracker": "https://github.com/samirasamrose/shopping-trend-radar/issues",
+        "Documentation": "https://github.com/samirasamrose/shopping-trend-radar/docs",
     },
     classifiers=[
         "Development Status :: 4 - Beta",
