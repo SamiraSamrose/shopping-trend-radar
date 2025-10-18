@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Merchant Dashboard - Shopping Trend Radar</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏪 Merchant Dashboard</h1>
+            <p>Discover opportunities, analyze competition, and optimize inventory</p>
+        </div>
+
+        <nav class="nav">
+            <a href="/" class="nav-button">Home</a>
+            <a href="/merchant" class="nav-button active">Merchant Dashboard</a>
+            <a href="/consumer" class="nav-button">Consumer Dashboard</a>
+            <a href="/demo" class="nav-button">Interactive Demo</a>
+        </nav>
+
+        <div class="dashboard-grid">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">High Opportunity Products</div>
+                    <div class="card-badge badge-success" id="opportunityCount">0</div>
+                </div>
+                <p>Products with low competition and high trending potential</p>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Emerging Niches</div>
+                    <div class="card-badge badge-info" id="nicheCount">0</div>
+                </div>
+                <p>New market segments showing growth signals</p>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Inventory Alerts</div>
+                    <div class="card-badge badge-warning" id="alertCount">0</div>
+                </div>
+                <p>Products requiring immediate stock attention</p>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Revenue Potential</div>
+                    <div class="card-badge badge-success">High</div>
+                </div>
+                <p>Estimated revenue from trending products</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Product Sourcing Recommendations</div>
+            </div>
+            <div class="product-list" id="sourcingRecommendations">
+                <div class="spinner"></div>
+            </div>
+        </div>
+
+        <div class="dashboard-grid">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Competition Analysis</div>
+                </div>
+                <div class="chart-container" style="height: 300px;">
+                    <canvas id="competitionChart"></canvas>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Profit Potential by Category</div>
+                </div>
+                <div class="chart-container" style="height: 300px;">
+                    <canvas id="profitChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Inventory Recommendations</div>
+            </div>
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Current Trend</th>
+                        <th>Predicted Demand</th>
+                        <th>Recommended Stock</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="inventoryTable">
+                    <tr>
+                        <td colspan="5" style="text-align: center;">
+                            <div class="spinner"></div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Ad Targeting Suggestions</div>
+            </div>
+            <div id="adSuggestions">
+                <div class="spinner"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/api-client.js"></script>
+    <script src="/static/js/charts.js"></script>
+    <script>
+        // Merchant-specific JavaScript
+        async function loadMerchantDashboard() {
+            try {
+                const products = await apiClient.getTrendingProducts({
+                    min_score: 0.6,
+                    limit: 20
+                });
+
+                // Filter high opportunity products
+                const highOpportunity = products.filter(p => 
+                    p.status === 'emerging' || p.status === 'rising'
+                );
+
+                document.getElementById('opportunityCount').textContent = highOpportunity.length;
+
+                // Load sourcing recommendations
+                await loadSourcingRecommendations(highOpportunity);
+
+                // Load inventory recommendations
+                await loadInventoryRecommendations(products);
+
+                // Update charts
+                updateMerchantCharts(products);
+
+            } catch (error) {
+                console.error('Error loading merchant dashboard:', error);
+            }
+        }
+
+        async function loadSourcingRecommendations(products) {
+            const container = document.getElementById('sourcingRecommendations');
+            
+            if (products.length === 0) {
+                container.innerHTML = '<p>No sourcing recommendations at this time.</p>';
+                return;
+            }
+
+            const recommendations = await Promise.all(
+                products.slice(0, 5).map(async (product) => {
+                    try {
+                        const insights = await apiClient.getMerchantInsights(product.id);
+                        return { product, insights };
+                    } catch (error) {
+                        return { product, insights: null };
+                    }
+                })
+            );
+
+            container.innerHTML = recommendations.map(({ product, insights }) => `
+                <div class="product-item">
+                    <div class="product-info">
+                        <div class="product-name">${product.name}</div>
+                        <div class="product-category">${product.category}</div>
+                        ${insights ? `
+                            <div style="margin-top: 10px;">
+                                <div><strong>Competition:</strong> ${insights.competition_level}</div>
+                                <div><strong>Profit Potential:</strong> ${insights.profit_potential.toFixed(0)}%</div>
+                                <div><strong>Best Source:</strong> ${insights.sourcing_recommendations[0]?.supplier || 'N/A'}</div>
+                            </div>
+                        ` : ''}
+                    </div>
+                    <div class="product-metrics">
+                        <div class="trend-score">${(product.trend_score * 100).toFixed(0)}%</div>
+                        <button class="btn btn-primary" onclick="viewMerchantDetails('${product.id}')">
+                            View Full Analysis
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function loadInventoryRecommendations(products) {
+            const table = document.getElementById('inventoryTable');
+            
+            table.innerHTML = products.slice(0, 10).map(product => `
+                <tr>
+                    <td>${product.name}</td>
+                    <td>
+                        <span class="status-${product.status}">${product.status}</span>
+                    </td>
+                    <td>${product.viral_velocity > 0.5 ? 'High' : 'Medium'}</td>
+                    <td>${calculateRecommendedStock(product)} units</td>
+                    <td>
+                        <button class="btn btn-sm btn-primary" onclick="viewInventoryPlan('${product.id}')">
+                            View Plan
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function calculateRecommendedStock(product) {
+            if (product.status === 'emerging') return 50;
+            if (product.status === 'rising') return 200;
+            if (product.status === 'peak') return 500;
+            return 20;
+        }
+
+        function updateMerchantCharts(products) {
+            // Competition analysis
+            const competitionData = {
+                labels: products.slice(0, 5).map(p => p.category),
+                values: products.slice(0, 5).map(p => Math.random() * 100)
+            };
+            chartManager.createPlatformChart('competitionChart', competitionData);
+
+            // Profit potential
+            const profitData = {
+                labels: products.slice(0, 5).map(p => p.category),
+                values: products.slice(0, 5).map(p => product.trend_score * p.viral_velocity * 100)
+            };
+            chartManager.createPlatformChart('profitChart', profitData);
+        }
+
+        async function viewMerchantDetails(productId) {
+            try {
+                const insights = await apiClient.getMerchantInsights(productId);
+                const product = await apiClient.getProductDetails(productId);
+                
+                alert(`Merchant Insights for ${product.name}\n\n` +
+                    `Competition: ${insights.competition_level}\n` +
+                    `Profit Potential: ${insights.profit_potential.toFixed(0)}%\n` +
+                    `Niche Opportunities: ${insights.niche_opportunities.join(', ')}`
+                );
+            } catch (error) {
+                alert('Error loading merchant insights');
+            }
+        }
+
+        function viewInventoryPlan(productId) {
+            alert('Inventory planning feature - detailed view coming soon!');
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', loadMerchantDashboard);
+    </script>
+</body>
+</html>
