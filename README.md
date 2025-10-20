@@ -1,6 +1,11 @@
 # Shopping Trend Radar Agent
 
-An AI-powered trend analysis system that monitors shopping trends across Amazon, social media platforms (YouTube, TikTok, Instagram, Meta, Pinterest), and e-commerce sites (Etsy, Walmart, eBay, Target) to surface trending products for merchants and consumers.
+An AI-powered trend analysis system that monitors shopping trends across Amazon, social media platforms (YouTube, TikTok, Instagram, Meta, Pinterest) and e-commerce sites (Etsy, Walmart, eBay, Target) to surface trending products for merchants and consumers.
+
+Demo Site- https://samirasamrose.github.io/dojo-game-launchpad/
+Source Code- https://github.com/SamiraSamrose/shopping-trend-radar
+Video Demo- https://youtu.be/vSW4gKRmQ54
+
 
 ## Features
 
